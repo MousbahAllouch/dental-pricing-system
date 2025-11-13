@@ -7,17 +7,18 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
+# Copy Prisma schema
+COPY prisma ./prisma
+
 # Install dependencies
 RUN npm install --production=false
-
-# Copy Prisma schema first
-COPY prisma ./prisma
 
 # Generate Prisma Client
 RUN npx prisma generate
 
 # Copy source code
-COPY . .
+COPY src ./src
+COPY tsconfig.json ./
 
 # Build TypeScript
 RUN npm run build
