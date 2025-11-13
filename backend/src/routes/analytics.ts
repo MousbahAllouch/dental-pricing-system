@@ -33,7 +33,7 @@ analyticsRouter.get('/product/:productId/price-comparison', async (req, res) => 
         acc[purchase.companyId].prices.push(purchase.price);
         acc[purchase.companyId].totalPurchases++;
         acc[purchase.companyId].averagePrice =
-          acc[purchase.companyId].prices.reduce((a, b) => a + b, 0) /
+          acc[purchase.companyId].prices.reduce((a: number, b: number) => a + b, 0) /
           acc[purchase.companyId].prices.length;
       }
       return acc;
