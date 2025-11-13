@@ -1,0 +1,62 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Company {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  contact   String?
+  email     String?
+  phone     String?
+  address   String?
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  purchases Purchase[]
+
+  @@map("companies")
+}
+
+model Product {
+  id          String   @id @default(cuid())
+  name        String
+  category    String?
+  description String?
+  unit        String   @default("piece") // piece, box, bottle, etc.
+  sku         String?  @unique
+  minStock    Int?     @default(0)
+  notes       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  purchases Purchase[]
+
+  @@map("products")
+}
+
+model Purchase {
+  id          String   @id @default(cuid())
+  productId   String
+  companyId   String
+  price       Float    // Price in USD
+  quantity    Int      @default(1)
+  totalCost   Float    // price * quantity
+  purchaseDate DateTime @default(now())
+  notes       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  company     Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@index([productId])
+  @@index([companyId])
+  @@index([purchaseDate])
+  @@map("purchases")
+}
